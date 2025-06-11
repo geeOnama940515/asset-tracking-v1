@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  it-asset-tracker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "9010:9010"
+    environment:
+      - NODE_ENV=production
+      - PORT=9010
+      - HOSTNAME=0.0.0.0
+    restart: unless-stopped
+    container_name: it-asset-tracker
+    networks:
+      - asset-tracker-network
+
+  # Optional: Add a reverse proxy (uncomment if needed)
+  # nginx:
+  #   image: nginx:alpine
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/nginx.conf:ro
+  #   depends_on:
+  #     - it-asset-tracker
+  #   restart: unless-stopped
+  #   container_name: it-asset-tracker-nginx
+  #   networks:
+  #     - asset-tracker-network
+
+networks:
+  asset-tracker-network:
+    driver: bridge
+
+volumes:
+  # Add volumes here if you need persistent storage
+  app-data:
+    driver: local
