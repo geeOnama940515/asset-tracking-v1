@@ -19,7 +19,7 @@ ENV NODE_ENV=production
 RUN npm run build
 
 # Expose port
-EXPOSE 9009
+EXPOSE 9010
 
 # Start the application
-CMD ["npm", "start", "--", "-p", "9009"]
+CMD ["npm", "start", "--", "-p", "9010"]
