@@ -1,16 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
+  output: 'export',
   eslint: {
     ignoreDuringBuilds: true,
   },
   images: { 
     unoptimized: true 
   },
-  // Configure for Docker deployment
-  experimental: {
-    outputFileTracingRoot: undefined,
-  },
+  // Disable server-side features for static export
+  trailingSlash: true,
+  skipTrailingSlashRedirect: true,
 };
 
 module.exports = nextConfig;

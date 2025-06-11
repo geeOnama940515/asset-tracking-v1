@@ -72,10 +72,30 @@ docker-compose logs -f
 docker-compose up -d --build
 ```
 
+### Troubleshooting Docker
+
+If you encounter build issues:
+
+1. **Clean Docker cache**
+   ```bash
+   docker system prune -a
+   ```
+
+2. **Rebuild without cache**
+   ```bash
+   docker-compose build --no-cache
+   docker-compose up -d
+   ```
+
+3. **Check logs**
+   ```bash
+   docker-compose logs it-asset-tracker
+   ```
+
 ## Production Deployment
 
 The application is configured for production deployment with:
-- Optimized Next.js standalone build
+- Static export for optimal performance
 - Multi-stage Docker build for smaller image size
 - Security best practices (non-root user)
 - Health checks and restart policies
@@ -87,7 +107,6 @@ Create a `.env.local` file for custom configuration:
 ```env
 NODE_ENV=production
 PORT=9010
-HOSTNAME=0.0.0.0
 ```
 
 ## API Endpoints (Future Mobile App)
@@ -104,6 +123,11 @@ The QR codes generate URLs in the format:
 - **QR Codes**: qrcode library
 - **Icons**: Lucide React
 - **Deployment**: Docker, Docker Compose
+- **Server**: serve (for static hosting)
+
+## Architecture
+
+This application uses Next.js static export for optimal performance and easy deployment. The Docker container serves the static files using the `serve` package on port 9010.
 
 ## License
 
