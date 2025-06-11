@@ -5,11 +5,15 @@ FROM node:20-alpine AS base
 FROM base AS deps
 WORKDIR /app
 
+# Install necessary packages for building
+RUN apk add --no-cache libc6-compat
+
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies (including dev dependencies for build)
-RUN npm ci
+# Clean npm cache and install dependencies
+RUN npm cache clean --force
+RUN npm ci --legacy-peer-deps
 
 # Rebuild the source code only when needed
 FROM base AS builder

@@ -54,7 +54,6 @@ docker-compose*
 .dockerignore
 
 # Documentation
-README.md
 *.md
 
 # CI/CD
@@ -69,11 +68,6 @@ jest.config.js
 # Linting
 .eslintrc*
 .prettierrc*
-
-# Package manager
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
 
 # Bolt specific
 .bolt/
