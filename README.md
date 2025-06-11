@@ -22,7 +22,7 @@ A comprehensive IT asset management system built with Next.js, featuring QR code
 
 2. **Run with Docker Compose**
    ```bash
-   docker-compose up -d
+   docker-compose up -d --build
    ```
 
 3. **Access the application**
@@ -60,7 +60,7 @@ docker run -p 9010:9010 it-asset-tracker
 ### Using Docker Compose
 ```bash
 # Start services
-docker-compose up -d
+docker-compose up -d --build
 
 # Stop services
 docker-compose down
@@ -69,36 +69,45 @@ docker-compose down
 docker-compose logs -f
 
 # Rebuild and restart
-docker-compose up -d --build
+docker-compose up -d --build --force-recreate
 ```
 
 ### Troubleshooting Docker
 
 If you encounter build issues:
 
-1. **Clean Docker cache**
+1. **Clean Docker cache and rebuild**
    ```bash
    docker system prune -a
-   ```
-
-2. **Rebuild without cache**
-   ```bash
    docker-compose build --no-cache
    docker-compose up -d
    ```
 
-3. **Check logs**
+2. **Check build logs**
+   ```bash
+   docker-compose build --no-cache --progress=plain
+   ```
+
+3. **Check container logs**
    ```bash
    docker-compose logs it-asset-tracker
+   ```
+
+4. **Remove all containers and rebuild**
+   ```bash
+   docker-compose down --volumes --remove-orphans
+   docker system prune -a
+   docker-compose up -d --build
    ```
 
 ## Production Deployment
 
 The application is configured for production deployment with:
-- Static export for optimal performance
-- Multi-stage Docker build for smaller image size
+- Multi-stage Docker build for optimal image size
+- Static export for maximum performance
 - Security best practices (non-root user)
 - Health checks and restart policies
+- Efficient caching layers
 
 ## Environment Variables
 
@@ -107,6 +116,7 @@ Create a `.env.local` file for custom configuration:
 ```env
 NODE_ENV=production
 PORT=9010
+NEXT_TELEMETRY_DISABLED=1
 ```
 
 ## API Endpoints (Future Mobile App)
@@ -127,7 +137,21 @@ The QR codes generate URLs in the format:
 
 ## Architecture
 
-This application uses Next.js static export for optimal performance and easy deployment. The Docker container serves the static files using the `serve` package on port 9010.
+This application uses Next.js static export for optimal performance and easy deployment. The Docker container uses a multi-stage build process:
+
+1. **Dependencies Stage**: Installs all npm dependencies
+2. **Builder Stage**: Builds the Next.js application
+3. **Runner Stage**: Serves the static files using the `serve` package
+
+The final image is optimized and runs as a non-root user for security.
+
+## Docker Image Details
+
+- **Base Image**: node:20-alpine
+- **Final Size**: ~150MB (optimized multi-stage build)
+- **Port**: 9010
+- **User**: Non-root (nextjs:nodejs)
+- **Health Check**: Included for container orchestration
 
 ## License
 
